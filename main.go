@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -40,10 +39,10 @@ func handler(request events.LambdaFunctionURLRequest) (events.LambdaFunctionURLR
 			response = handleGraphQL(apiKey)
 		} else {
 			return events.LambdaFunctionURLResponse{
-				StatusCode: 404,
-				Body:       string("Not Found."), // Explicitly convert the untyped string constant
+				StatusCode: 400,
+				Body:       string("Method not allowed. CODE:400.1"), // Explicitly convert the untyped string constant
 				// Other fields like Headers, Cookies, IsBase64Encoded can be added
-			}, errors.New("input value 3 is not allowed") // Return an error // throw error
+			}, nil //return error in the "events.LambdaFunctionURLResponse" struct, don't return in this error field.
 
 		}
 

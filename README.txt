@@ -1,13 +1,19 @@
 test sh file (only file runner) try in Git-Bash only.
 ---------------------------------------------
-NOTE; Step #1 runs the following code in a "sh file"
+NOTE;Run Git-Bash in "Administrator mode"  
+     Step #1 runs the following code in a "sh file".
 Step #1) sh build_exe.sh
 
 git rm -f "bootstrap"
 git rm -f "go_lambda_test.zip"
 GOOS=linux CGO_ENABLED=0 GOARCH=arm64 go build -tags lambda.norpc -o bootstrap main.go
-git archive --format=zip --output="go_lambda_test" HEAD bootstrap
+git archive --format=zip --output="go_lambda_test.zip" HEAD bootstrap
 
+
+ld method of zipping my bootstrap exe
+----------------------------------------
+git archive --format=zip --output="go_lambda_test.zip" HEAD bootstrap
+^^^the above uses the bootstrap of the master branch.
 
 test bat file works in Git-Bash (worked!)
 ---------------------------------------------
@@ -36,6 +42,7 @@ tar -tzvf go_lambda_test.tar.zip
 Best YouTube video tutorial
 ---------------------------------
 https://www.youtube.com/watch?v=aAA4tgkv2cI
+
 
 Build Golang lambda code into a executable (WORKS! Automated)
 ---------------------------------------------------------------
