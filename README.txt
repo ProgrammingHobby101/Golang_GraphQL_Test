@@ -1,9 +1,33 @@
+test bat file works in Windows PowerShell
+---------------------------------------------
+Step #1)  run .\build_start.bat    
+
+test#2 bat file
+------------------------------
+DEL go_lambda_test.zip
+sh build_exe.sh
+zip myFunction.zip bootstrap
+
+
+
+test#2 bat file
+------------------------------
+DEL go_lambda_test.tar.zip
+sh build_exe.sh
+ tar -czvf go_lambda_test.tar.zip bootstrap
+tar -tzvf go_lambda_test.tar.zip
+
+
+Best YouTube video tutorial
+---------------------------------
+https://www.youtube.com/watch?v=aAA4tgkv2cI
+
 Build Golang lambda code into a executable (WORKS! Automated)
 ---------------------------------------------------------------
 Step #1) Open git-bash.
 Step #2) Run the following command in git-bash
         ./build_start.bat
-Step #3) copy the go_lambda_test.tar.gz
+Step #3) upload the zip "go_lambda_test.tar.gz" to AWS Lambda Code.
 
 Build Golang lambda code into a executable (MANUAL RUNS) 
 --------------------------------------------------
