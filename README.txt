@@ -1,3 +1,18 @@
+test sh file (only file runner) try in Git-Bash only.
+---------------------------------------------
+NOTE; Step #1 runs the following code in a "sh file"
+Step #1) sh build_exe.sh
+
+git rm -f "bootstrap"
+git rm -f "go_lambda_test.zip"
+GOOS=linux CGO_ENABLED=0 GOARCH=arm64 go build -tags lambda.norpc -o bootstrap main.go
+git archive --format=zip --output="go_lambda_test" HEAD bootstrap
+
+
+test bat file works in Git-Bash (worked!)
+---------------------------------------------
+Step #1)  run ./build_start.bat  
+
 test bat file works in Windows PowerShell
 ---------------------------------------------
 Step #1)  run .\build_start.bat    
@@ -38,6 +53,10 @@ GOOS=linux CGO_ENABLED=0 GOARCH=arm64 go build -tags lambda.norpc -o bootstrap m
 Step#3) zip the bootstrap executable.
 Note: I got this code from; https://gemini.google.com/app/eefd04fee68d2bb9?is_sa=1&is_sa=1&android-min-version=301356232&ios-min-version=322.0&campaign_id=bkws&utm_source=sem&utm_source=google&utm_medium=paid-media&utm_medium=cpc&utm_campaign=bkws&utm_campaign=2024enUS_gemfeb&pt=9008&mt=8&ct=p-growth-sem-bkws&gclsrc=aw.ds&gad_source=1&gad_campaignid=20108148196&gbraid=0AAAAApk5BhnQgzvhNwLwljcWmGLCINdfx&gclid=CjwKCAjw3tzHBhBREiwAlMJoUiNA9NAxXs40D0kGk8HuDhj96VW9GfEWdi4-Rq6910_G_YsI_2ElahoCSqMQAvD_BwE  
 
+I got the main code from
+-------------------------------- 
+- https://github.com/code-heim/go_73_lambda/blob/main/multi_route/main.go
+- https://www.youtube.com/watch?v=aAA4tgkv2cI&t=480s
 
 Permissions Info (AWS CLOUD permission)
 ------------------------------------------
