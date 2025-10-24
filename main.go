@@ -17,7 +17,7 @@ func handleHealth() events.LambdaFunctionURLResponse {
 }
 
 func handleGraphQL(apiKey string) events.LambdaFunctionURLResponse {
-	greeting := "Hi!"
+	greeting := "Hi, Earthling!"
 	if apiKey != "valid_key" { // Optional: Validate API Key
 		return events.LambdaFunctionURLResponse{StatusCode: 401, Body: "Unauthorized"}
 	}
