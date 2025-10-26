@@ -6,5 +6,6 @@ set GOARCH=arm64
 set CGO_ENABLED=0 
 go build -tags lambda.norpc -o bootstrap main.go
 powershell -Command "Compress-Archive bootstrap -f go_lambda_test3.zip"
+aws lambda update-function-code --function-name golang_graphQL --zip-file fileb://go_lambda_test3.zip --region us-east-2
 @REM Compress-Archive bootstrap go_lambda_test3.zip
 @REM git archive --format=zip --output=go_lambda_test.zip HEAD bootstrap
