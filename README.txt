@@ -7,15 +7,12 @@ AWS CLI upload Setup
 --------------------------
 NOTE: important to remember that I don't need trustpolicyforlambdaservice.json, instead set my user permissions through AWS's web browser console.
 First Goal: login to AWS's CLI.
+	Step #1) aws lambda update-function-code --function-name golang_graphQL --zip-file fileb://go_lambda_test3.zip --region us-east-2
+NOTE: I get the "region" line from my lambda function's URL.
+NOTE: I need to configure my aws cli with my login account info, by running "aws configure", during this type "text" when it asks for "Default output format".
 Second Goal: "Add Policy Permission"
 	Step #1) go to AWS console, and use the search bar at the top of page to enter "IAM" console page. Then click on the number assigned to the "Roles" text Then on that page select the "Permissions" link/tab and then on the Roles page select my lambda function; "golang_graphQL-role-h4m8zgt8". Then select "AWSLambda_FullAccess", and under the Permissions' tab, select "Lambda" link. Then under the Permissions page, select "UpdateFunctionCode" link, then under Permissions page, click on "Entities attached" and on that page select "Testingaws" checkbox and select "Attach" under "Entities attached" tab. If I set the correct role I will see a success output from the AWS CLI that says my role is;  "Role": "arn:aws:iam::777486915038:role/service-role/golang_graphQL-role-h4m8zgt8",
 Third Goal:  aws lambda update-function-code --function-name golang_graphQL --zip-file fileb://go_lambda_test3.zip --region us-east-2 
-
-AWS CLI upload
---------------------------
-Step #1) aws lambda update-function-code --function-name golang_graphQL --zip-file fileb://go_lambda_test3.zip --region us-east-2
-NOTE: I get the "region" line from my lambda function's URL.
-NOTE: I need to configure my aws cli with my login account info, by running "aws configure", during this type "text" when it asks for "Default output format".
 
 
 test sh file (only file runner) try in Git-Bash only.
