@@ -123,10 +123,10 @@ const RootMutationType = new GraphQLObjectType({
   })
 })
 
-const schema = new GraphQLSchema(`{
+const schema = new GraphQLSchema({
   query: RootQueryType,
   mutation: RootMutationType
-}`)
+})
 
 app.use('/graphql', expressGraphQL({
   schema: schema,
