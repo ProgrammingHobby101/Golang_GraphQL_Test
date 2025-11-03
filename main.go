@@ -12,7 +12,7 @@ func main() {
 }
 
 func handleHealth() events.LambdaFunctionURLResponse {
-	message := "Hello Healthy World!!!!!"
+	message := "Hello Healthy World! Watching the Tamron Hall Show."
 	return events.LambdaFunctionURLResponse{StatusCode: 200, Body: message}
 }
 
