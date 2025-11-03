@@ -23,6 +23,10 @@ func handleGraphQL(apiKey string) events.LambdaFunctionURLResponse {
 	}
 	return events.LambdaFunctionURLResponse{StatusCode: 200, Body: greeting + " you are allowed"}
 }
+func handleGraphiQL() events.LambdaFunctionURLResponse {
+	return events.LambdaFunctionURLResponse{StatusCode: 200, Body: "Enjoy graphiQL."}
+	//return.
+}
 
 func handler(request events.LambdaFunctionURLRequest) (events.LambdaFunctionURLResponse, error) {
 	path := request.RequestContext.HTTP.Path
@@ -45,7 +49,8 @@ func handler(request events.LambdaFunctionURLRequest) (events.LambdaFunctionURLR
 			}, nil //return error in the "events.LambdaFunctionURLResponse" struct, don't return in this error field.
 
 		}
-
+	case "/api/graphiql":
+		response = handleGraphiQL()
 	case "/api/health":
 		response = handleHealth()
 	default:

@@ -5,7 +5,10 @@ import (
 	"fmt"
 	"log"
 
+	"net/http"
+
 	"github.com/graphql-go/graphql"
+	"github.com/mnmtanish/go-graphiql"
 )
 
 type Tutorial struct {
@@ -149,6 +152,12 @@ func main() {
 			}
 		}
 	`
+	//c, err := graphiql.NewClient("localhost:9001/graphql")
+	if err != nil {
+		panic(err)
+	}
+	http.HandleFunc("/graphiql", graphiql.ServeGraphiQL)
+	http.ListenAndServe(":9001", nil)
 	params := graphql.Params{Schema: schema, RequestString: query}
 	r := graphql.Do(params)
 	if len(r.Errors) > 0 {
