@@ -36,25 +36,36 @@ func handleHealth(w http.ResponseWriter, r *http.Request) {
 func myHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello from a Go Lambda!")
 }
-func handler(request events.LambdaFunctionURLRequest) (events.LambdaFunctionURLResponse, error) {
-	path := request.RequestContext.HTTP.Path
-	httpMethod := request.RequestContext.HTTP.Method
-	apiKey := request.Headers["x-api-key"]
+func handler(w http.ResponseWriter, r *http.Request) events.LambdaFunctionURLResponse {
+	// Create a standard Go ServeMux and register your handler
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", playground.Handler("GraphQL playground", "/api/graphiql"))
+	//mux.HandleFunc("/hello", myHandler)
+	//mux.HandleFunc("/health", handleHealth)
+	//mux.HandleFunc("/api/graphiql", handleGraphQL)
+	// Wrap the mux in the httpadapter for V2 API Gateway events
+	adapter = httpadapter.NewV2(mux)
+
+	path := r.Method                    //path := request.RequestContext.HTTP.Path
+	httpMethod := r.Method              //httpMethod := request.RequestContext.HTTP.Method
+	apiKey := r.Header.Get("x-api-key") //apiKey := request.Headers["x-api-key"]
 
 	var response events.LambdaFunctionURLResponse
 
 	switch path {
-	case "/api/graphQL":
+	case "/api/graphql":
 		fmt.Printf("The HTTP method in the /api/graphQL  path is: %s\n", httpMethod)
-		PostCompare := "POST"
-		if httpMethod == PostCompare {
+		MethodCompare := "GET" //POST
+		if httpMethod == MethodCompare {
 			response = handleGraphQL(apiKey)
 		} else {
-			return events.LambdaFunctionURLResponse{
-				StatusCode: 400,
-				Body:       string("Method not allowed. CODE:400.1"), // Explicitly convert the untyped string constant
-				// Other fields like Headers, Cookies, IsBase64Encoded can be added
-			}, nil //return error in the "events.LambdaFunctionURLResponse" struct, don't return in this error field.
+			w.WriteHeader(http.StatusOK)
+			fmt.Fprintf(w, "Method not allowed. CODE:400.1")
+			// return events.LambdaFunctionURLResponse{
+			// 	StatusCode: 400,
+			// 	Body:       string("Method not allowed. CODE:400.1"), // Explicitly convert the untyped string constant
+			// 	// Other fields like Headers, Cookies, IsBase64Encoded can be added
+			// }, nil //return error in the "events.LambdaFunctionURLResponse" struct, don't return in this error field.
 
 		}
 	// case "/api/graphiql":
@@ -66,17 +77,15 @@ func handler(request events.LambdaFunctionURLRequest) (events.LambdaFunctionURLR
 	}
 	//func(ctx context.Context, req events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
 	// return adapter.ProxyWithContext(ctx, req)
-	return response, nil
+	return response
 }
 func main() {
-	// Create a standard Go ServeMux and register your handler
+
+	// For Local testing, Create a standard Go ServeMux and register your handler
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", playground.Handler("GraphQL playground", "/api/graphiql"))
 	mux.HandleFunc("/hello", myHandler)
 	mux.HandleFunc("/health", handleHealth)
-	//mux.HandleFunc("/api/graphiql", handleGraphQL)
-	// Wrap the mux in the httpadapter for V2 API Gateway events
-	adapter = httpadapter.NewV2(mux)
 
 	// Start the Lambda runtime with the adapter's proxy method
 	lambda.Start(handler)
