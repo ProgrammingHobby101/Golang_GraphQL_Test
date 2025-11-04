@@ -4,25 +4,32 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
-	"github.com/aws/aws-lambda-go/events"
-	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/awslabs/aws-lambda-go-api-proxy/httpadapter"
+	//https://medium.com/@youlserf.cardenas/mastering-graphql-in-go-a-geeky-adventure-with-star-wars-and-pok%C3%A9mon-5db63f852fa0
+	"graphql/schema"
 
+	"github.com/graphql-go/handler"
+	//"github.com/aws/aws-lambda-go/events"
+	//"github.com/awslabs/aws-lambda-go-api-proxy/httpadapter"
 	//99designs_gQLgen imports
-
-	"github.com/99designs/gqlgen/graphql/playground"
 )
 
-var adapter *httpadapter.HandlerAdapterV2
+//var adapter *httpadapter.HandlerAdapterV2
 
-func handleGraphQL(apiKey string) events.LambdaFunctionURLResponse {
-	greeting := "Hi, Earthling!"
+func handleGraphQL(w http.ResponseWriter, r *http.Request) { //old return type was;  events.APIGatewayV2HTTPResponse
+	greeting := "Hi, Lambda Earthling!"
+	apiKey := r.Header.Get("x-api-key")
 	if apiKey != "valid_key" { // Optional: Validate API Key
-		return events.LambdaFunctionURLResponse{StatusCode: 401, Body: "Unauthorized"}
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Unauthorized."))
+		return
+		// return events.APIGatewayV2HTTPResponse{StatusCode: 401, Body: "Unauthorized"}
 	}
-	return events.LambdaFunctionURLResponse{StatusCode: 200, Body: greeting + " you are allowed"}
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(greeting + " you are allowed with mux"))
+	// return events.APIGatewayV2HTTPResponse{StatusCode: 200, Body: greeting + " you are allowed with mux"}
 }
 
 //	func handleGraphiQL() events.LambdaFunctionURLResponse {
@@ -36,48 +43,68 @@ func handleHealth(w http.ResponseWriter, r *http.Request) {
 func myHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello from a Go Lambda!")
 }
-func handler(request events.LambdaFunctionURLRequest) (events.LambdaFunctionURLResponse, error) {
-	path := request.RequestContext.HTTP.Path
-	httpMethod := request.RequestContext.HTTP.Method
-	apiKey := request.Headers["x-api-key"]
 
-	var response events.LambdaFunctionURLResponse
+// func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
+// 	path := req.RequestContext.HTTP.Path
+// 	httpMethod := req.RequestContext.HTTP.Method
+// 	//apiKey := req.Headers["x-api-key"]
 
-	switch path {
-	case "/api/graphQL":
-		fmt.Printf("The HTTP method in the /api/graphQL  path is: %s\n", httpMethod)
-		PostCompare := "POST"
-		if httpMethod == PostCompare {
-			response = handleGraphQL(apiKey)
-		} else {
-			return events.LambdaFunctionURLResponse{
-				StatusCode: 400,
-				Body:       string("Method not allowed. CODE:400.1"), // Explicitly convert the untyped string constant
-				// Other fields like Headers, Cookies, IsBase64Encoded can be added
-			}, nil //return error in the "events.LambdaFunctionURLResponse" struct, don't return in this error field.
+// 	var response events.APIGatewayV2HTTPResponse
 
-		}
-	// case "/api/graphiql":
-	// 	response = handleGraphiQL()
-	// case "/api/health":
-	// 	response = handleHealth()
-	default:
-		response = events.LambdaFunctionURLResponse{StatusCode: 404, Body: "Not Found"}
-	}
-	//func(ctx context.Context, req events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
-	// return adapter.ProxyWithContext(ctx, req)
-	return response, nil
-}
+// 	switch path {
+// 	case "/api/graphQL":
+// 		fmt.Printf("The HTTP method in the /api/graphQL  path is: %s\n", httpMethod)
+// 		PostCompare := "POST"
+// 		if httpMethod == PostCompare {
+// 			response = handleGraphQL(apiKey)
+// 		} else {
+// 			return events.APIGatewayV2HTTPResponse{
+// 				StatusCode: 400,
+// 				Body:       string("Method not allowed. CODE:400.1"), // Explicitly convert the untyped string constant
+// 				// Other fields like Headers, Cookies, IsBase64Encoded can be added
+// 			}, nil //return error in the "events.LambdaFunctionURLResponse" struct, don't return in this error field.
+
+//			}
+//		// case "/api/graphiql":
+//		// 	response = handleGraphiQL()
+//		// case "/api/health":
+//		// 	response = handleHealth()
+//		default:
+//			response = events.APIGatewayV2HTTPResponse{StatusCode: 404, Body: "Not Found"}
+//		}
+//		//func(ctx context.Context, req events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
+//		//return adapter.ProxyWithContext(ctx, req)
+//		return response, nil // This is the line originally for the "handler" function.
+//	}
 func main() {
 	// Create a standard Go ServeMux and register your handler
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", playground.Handler("GraphQL playground", "/api/graphiql"))
-	mux.HandleFunc("/hello", myHandler)
-	mux.HandleFunc("/health", handleHealth)
-	//mux.HandleFunc("/api/graphiql", handleGraphQL)
+	//router := mux.NewRouter()
+	//router.HandleFunc("/", playground.Handler("GraphQL playground", "/api/graphQL"))
+	// router.HandleFunc("/api/hello", myHandler)
+	// router.HandleFunc("/api/health", handleHealth)
+	// router.HandleFunc("/api/graphQL", handleGraphQL)
+	// err := http.ListenAndServe(":3001", router)
+	// if err != nil {
+	// 	log.Fatal("ListenAndServe error: ", err)
+	// }
+	h := handler.New(&handler.Config{
+		Schema:   &schema.Schema,
+		Pretty:   true,
+		GraphiQL: true,
+	})
+
+	http.Handle("/graphql", h)
+	// http.Handle("/api/hello", myHandler)
+	// http.Handle("/api/health", handleHealth)
+	// http.Handle("/api/graphQL", handleGraphQL)
+	err := http.ListenAndServe(":8080", nil)
+	if err != nil {
+		log.Fatal("ListenAndServe error: ", err)
+	}
+
 	// Wrap the mux in the httpadapter for V2 API Gateway events
-	adapter = httpadapter.NewV2(mux)
+	//adapter = httpadapter.NewV2(mux)
 
 	// Start the Lambda runtime with the adapter's proxy method
-	lambda.Start(handler)
+	//lambda.Start(handler)
 }
