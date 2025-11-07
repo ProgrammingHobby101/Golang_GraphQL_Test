@@ -262,19 +262,62 @@ func HandleRequest(request events.LambdaFunctionURLRequest) (events.LambdaFuncti
 		if apiKey != "valid_key" { // Optional: Validate API Key
 			return events.LambdaFunctionURLResponse{StatusCode: 401, Body: "Unauthorized"}, nil
 		}
-		// // Mutation manual test
-		// query := `
-		// 		mutation {
-		// 			create(title: "Hello Lambda World") {
-		// 				title
-		// 			}
-		// 		}
-		// 	`
-		var message string
-		query1 := request.Body
-		message = "query recieved " + query1
 
-		return events.LambdaFunctionURLResponse{StatusCode: 200, Body: message}, nil
+		query1 := request.Body
+		fmt.Printf("Request.Body was; %s \n", query1)
+		params := graphql.Params{Schema: schema, RequestString: query1}
+		r := graphql.Do(params)
+		// ... your GraphQL execution logic resulting in 'r' ...
+		//var r *graphql.Result // Assume 'r' is populated here
+
+		// Example: Create a dummy result for demonstration
+		r = &graphql.Result{
+			Data: map[string]interface{}{
+				"query": query1,
+			},
+		}
+
+		jsonBytes, err := json.Marshal(r)
+		if err != nil {
+			fmt.Println("Error marshalling to JSON:", err)
+			//return
+			return events.LambdaFunctionURLResponse{StatusCode: 400, Body: "Error occurred." + err.Error()}, nil
+		}
+
+		jsonString := string(jsonBytes)
+		fmt.Println(jsonString)
+
+		if len(r.Errors) > 0 {
+			log.Fatalf("failed to execute graphql operation, errors: %+v", r.Errors)
+			return events.LambdaFunctionURLResponse{StatusCode: 400, Body: "Error occurred." + string(jsonString)}, nil
+		}
+		rJSON1, _ := json.Marshal(r)
+		fmt.Printf("%s \n", rJSON1)
+		return events.LambdaFunctionURLResponse{StatusCode: 200, Body: "completed query/mutation: " + string(rJSON1)}, nil
+
+		//TEST november 7, 2025
+		// // // Mutation manual test
+		// // query := `
+		// // 		mutation {
+		// // 			create(title: "Hello Lambda World") {
+		// // 				title
+		// // 			}
+		// // 		}
+		// // 	`
+		// // var message string
+		// query1 := request.Body
+		// // message = "query recieved " + query1
+		// // Marshal the User struct into a JSON byte slice
+		// jsonData, err := json.Marshal(query1)
+		// if err != nil {
+		// 	fmt.Println("Error marshalling JSON:", err)
+		// }
+
+		// // Convert the byte slice to a string for printing
+		// fmt.Println(string(jsonData)) // Output: {"Name":"Alice","Age":30,"IsAdmin":true}
+
+		// return events.LambdaFunctionURLResponse{StatusCode: 200, Body: string(jsonData)}, nil
+
 		// fmt.Printf("request.Body was; %s \n", query1)
 		// params := graphql.Params{Schema: schema, RequestString: query1}
 		// r := graphql.Do(params)
