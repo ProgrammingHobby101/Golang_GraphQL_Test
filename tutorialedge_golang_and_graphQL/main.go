@@ -234,29 +234,31 @@ func GraphQLEntryPoint(apiKey string, request events.LambdaFunctionURLRequest) e
 	// fmt.Printf("%s \n", rJSON2)
 	// return events.LambdaFunctionURLResponse{StatusCode: 201, Body: greeting + " and you are allowed. GraphQL Mutate(Create) response: " + string(rJSON1) + "GraphQL Query(list tutorials) response:" + string(rJSON2)}
 }
-func HandleRequest(apiKey string, request events.LambdaFunctionURLRequest) (events.LambdaFunctionURLResponse, error) {
+func HandleRequest(request events.LambdaFunctionURLRequest) (events.LambdaFunctionURLResponse, error) {
 	path := request.RequestContext.HTTP.Path
 	httpMethod := request.RequestContext.HTTP.Method
-	apiKey = request.Headers["x-api-key"]
+	apiKey := request.Headers["x-api-key"]
 
 	var response events.LambdaFunctionURLResponse
 
 	switch path {
-	// case "/":
-	// 	fmt.Printf("The HTTP method in the /api/graphQL  path is: %s\n", httpMethod)
-	// 	PostCompare := "POST"
-	// 	if httpMethod == PostCompare {
-	// 		// response = handleGraphQL(apiKey)
-	// 	} else {
-	// 		return events.LambdaFunctionURLResponse{
-	// 			StatusCode: 400,
-	// 			Body:       string("Method not allowed. CODE:400.1"), // Explicitly convert the untyped string constant
-	// 			// Other fields like Headers, Cookies, IsBase64Encoded can be added
-	// 		}, nil //return error in the "events.LambdaFunctionURLResponse" struct, don't return in this error field.
+	case "/":
+		fmt.Printf("The HTTP method in the /api/graphQL  path is: %s\n", httpMethod)
+		// PostCompare := "POST"
+		// if httpMethod == PostCompare {
+		// 	// response = handleGraphQL(apiKey)
+		// } else {
+		return events.LambdaFunctionURLResponse{
+			StatusCode: 400,
+			Body:       string("Method not allowed. CODE:400.1"), // Explicitly convert the untyped string constant
+			// Other fields like Headers, Cookies, IsBase64Encoded can be added
+		}, nil //return error in the "events.LambdaFunctionURLResponse" struct, don't return in this error field.
 
-	// 	}
+		//}// when I uncomment this, also uncomment the Method check in this switch-case.
 	case "/api/graphQL":
 		response = GraphQLEntryPoint(apiKey, request)
+	case "/api/graphiql":
+		response = handleHealth()
 	// case "/api/graphiql":
 	// 	response = handleGraphiQL()
 	case "/api/health":
