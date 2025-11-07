@@ -191,7 +191,8 @@ func handleHealth() events.LambdaFunctionURLResponse {
 // 	return events.LambdaFunctionURLResponse{StatusCode: 200, Body: greeting + " you are allowed"}
 // }
 
-func GraphQLEntryPoint(apiKey string, request events.LambdaFunctionURLRequest) events.LambdaFunctionURLResponse {
+func GraphQLEntryPoint(request events.LambdaFunctionURLRequest) events.LambdaFunctionURLResponse {
+	apiKey := request.Headers["x-api-key"]
 	//greeting := "Hi, Earthling!"
 	if apiKey != "valid_key" { // Optional: Validate API Key
 		return events.LambdaFunctionURLResponse{StatusCode: 401, Body: "Unauthorized"}
@@ -237,7 +238,7 @@ func GraphQLEntryPoint(apiKey string, request events.LambdaFunctionURLRequest) e
 func HandleRequest(request events.LambdaFunctionURLRequest) (events.LambdaFunctionURLResponse, error) {
 	path := request.RequestContext.HTTP.Path
 	httpMethod := request.RequestContext.HTTP.Method
-	apiKey := request.Headers["x-api-key"]
+	//apiKey := request.Headers["x-api-key"]
 
 	var response events.LambdaFunctionURLResponse
 
@@ -256,7 +257,36 @@ func HandleRequest(request events.LambdaFunctionURLRequest) (events.LambdaFuncti
 
 		//}// when I uncomment this, also uncomment the Method check in this switch-case.
 	case "/api/graphQL":
-		response = GraphQLEntryPoint(apiKey, request)
+		apiKey := request.Headers["x-api-key"]
+		//greeting := "Hi, Earthling!"
+		if apiKey != "valid_key" { // Optional: Validate API Key
+			return events.LambdaFunctionURLResponse{StatusCode: 401, Body: "Unauthorized"}, nil
+		}
+		// // Mutation manual test
+		// query := `
+		// 		mutation {
+		// 			create(title: "Hello Lambda World") {
+		// 				title
+		// 			}
+		// 		}
+		// 	`
+		var message string
+		query1 := request.Body
+		message = "query recieved " + query1
+
+		return events.LambdaFunctionURLResponse{StatusCode: 200, Body: message}, nil
+		// fmt.Printf("request.Body was; %s \n", query1)
+		// params := graphql.Params{Schema: schema, RequestString: query1}
+		// r := graphql.Do(params)
+		// if len(r.Errors) > 0 {
+		// 	//log.Fatalf("failed to execute graphql operation, errors: %+v", r.Errors)
+		// 	return events.LambdaFunctionURLResponse{StatusCode: 400, Body: "Error detected in /api/graphQL ."}, nil
+		// }
+		// rJSON1, _ := json.Marshal(r)
+		// fmt.Printf("%s \n", rJSON1)
+		// return events.LambdaFunctionURLResponse{StatusCode: 200, Body: "completed query/mutation: " + string(rJSON1)}, nil
+
+		// //response = GraphQLEntryPoint(request)
 	case "/api/graphiql":
 		response = handleHealth()
 	// case "/api/graphiql":

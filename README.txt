@@ -1,7 +1,10 @@
+Error Correction
+-------------------
+502 Bad Gateway - I was getting this error when added "/" home path to the API Gateway, so deleting this endpoint on the API Gateway got rid of the error.
+
 Working command in Windows OS Powershell and Git-Bash
 ---------------------------------------------------------
 Step #1) ./build_start.cmd
-
 
 AWS CLI upload Setup
 --------------------------
