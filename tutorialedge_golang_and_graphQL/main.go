@@ -215,11 +215,12 @@ func GraphQLEntryPoint(request events.LambdaFunctionURLRequest) events.LambdaFun
 	}
 	// // Mutation manual test
 	// query := `
-	// 		mutation {
-	// 			create(title: "Hello Lambda World") {
-	// 				title
+	// 		    mutation {
+	// 				create(title: "medium blog #3") {
+	// 					title
+	// 					id
+	// 				}
 	// 			}
-	// 		}
 	// 	`
 	query1 := request.Body
 	fmt.Printf("Request.Body was; %s \n", query1)
@@ -328,6 +329,11 @@ func HandleRequest(request events.LambdaFunctionURLRequest) (events.LambdaFuncti
 		// 	fmt.Println("Value is not a string")
 		// 	return events.LambdaFunctionURLResponse{StatusCode: 400, Body: "r.Data.(string) was not a string because it was "}, nil
 		// }
+
+		// check for null value in the resulting query
+		if string(graphqlResultJSON_Data) == "null" {
+			return events.LambdaFunctionURLResponse{StatusCode: 400, Body: "Error graphql result was: " + string(graphqlResultJSON_Data)}, nil
+		}
 		return events.LambdaFunctionURLResponse{StatusCode: 200, Body: "graphql result is: " + string(graphqlResultJSON_Data)}, nil
 
 		//old working code is below!
