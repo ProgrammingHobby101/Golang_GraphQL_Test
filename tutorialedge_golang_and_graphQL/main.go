@@ -33,7 +33,7 @@ type Comment struct {
 var schema graphql.Schema
 
 func populate() []Tutorial {
-	author := &Author{Name: "Elliot Forbes", Tutorials: []int{1, 2}}
+	author := &Author{Name: "Elliot Forbes", Tutorials: []int{1, 2, 3}}
 	tutorial := Tutorial{
 		ID:     0,
 		Title:  "Go GraphQL Tutorial",
@@ -50,10 +50,19 @@ func populate() []Tutorial {
 			Comment{Body: "Second Comment"},
 		},
 	}
+	tutorial3 := Tutorial{
+		ID:     2,
+		Title:  "Go GraphQL Tutorial - Part 3",
+		Author: *author,
+		Comments: []Comment{
+			Comment{Body: "Third Comment"},
+		},
+	}
 
 	var tutorials []Tutorial
 	tutorials = append(tutorials, tutorial)
 	tutorials = append(tutorials, tutorial2)
+	tutorials = append(tutorials, tutorial3)
 
 	return tutorials
 }
@@ -124,6 +133,13 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 		},
 	},
 })
+
+// GraphQLRequest represents the structure of a typical GraphQL request
+type GraphQLRequest struct {
+	Query         string                 `json:"query"`
+	Variables     map[string]interface{} `json:"variables"`
+	OperationName string                 `json:"operationName"`
+}
 
 func main() {
 	my_init()
@@ -263,37 +279,91 @@ func HandleRequest(request events.LambdaFunctionURLRequest) (events.LambdaFuncti
 			return events.LambdaFunctionURLResponse{StatusCode: 401, Body: "Unauthorized"}, nil
 		}
 
-		query1 := request.Body
-		fmt.Printf("Request.Body was; %s \n", query1)
-		params := graphql.Params{Schema: schema, RequestString: query1}
+		var gqlRequest GraphQLRequest
+		if err := json.Unmarshal([]byte(request.Body), &gqlRequest); err != nil {
+			// http.Error(w, "Error unmarshaling JSON", http.StatusBadRequest)
+			// return
+			return events.LambdaFunctionURLResponse{StatusCode: 400, Body: "Error unmarshaling JSON"}, nil
+		}
+
+		// Now gqlRequest.Query contains the GraphQL query string
+		// gqlRequest.Variables contains any variables passed
+		// gqlRequest.OperationName contains the operation name (if specified)
+
+		fmt.Printf("Received GraphQL Query: %s\n", gqlRequest.Query)
+		fmt.Printf("Variables: %v\n", gqlRequest.Variables)
+
+		// ... process the GraphQL query ...
+
+		// w.WriteHeader(http.StatusOK)
+		// w.Write([]byte("Query received and processed (placeholder)"))
+		//responseBodyPart1 := "Query received and processed (placeholder). Received GraphQL Query was: %s\n" + gqlRequest.Query
+		//query1 := request.Body
+		//fmt.Printf("Request.Body was; %s \n", query1)
+		// Query manual test
+		// querytest := `
+		// 		{
+		// 			list {
+		// 				id
+		// 				title
+		// 			}
+		// 		}
+		// 	`
+		params := graphql.Params{Schema: schema, RequestString: gqlRequest.Query} // gqlRequest.Query (this is for non-hardcoded queries), querytest (this is for hard-coded queries)
 		r := graphql.Do(params)
+
+		// // Marshal the User struct into a JSON byte slice
+		graphqlResultJSON_Data, err := json.Marshal(r.Data)
+		if err != nil {
+			fmt.Println("Error marshalling JSON:", err)
+			return events.LambdaFunctionURLResponse{StatusCode: 400, Body: "tried to json.Marshal(r.Data) but got error; " + err.Error()}, nil
+		}
+		// responseBodyPart2, ok := r.Data.(string)
+		// if ok {
+		// 	// reresponseBodyPart2 now holds the string value
+		// 	fmt.Println(responseBodyPart2)
+		// 	responseBodyPart1 = responseBodyPart1 + " . The graphql query result is: " + responseBodyPart2
+		// } else {
+		// 	// Handle the case where the assertion fails
+		// 	fmt.Println("Value is not a string")
+		// 	return events.LambdaFunctionURLResponse{StatusCode: 400, Body: "r.Data.(string) was not a string because it was "}, nil
+		// }
+		return events.LambdaFunctionURLResponse{StatusCode: 200, Body: "graphql result is: " + string(graphqlResultJSON_Data)}, nil
+
+		//old working code is below!
+
+		// query1 := request.Body
+		// fmt.Printf("Request.Body was; %s \n", query1)
+		// params := graphql.Params{Schema: schema, RequestString: query1}
+		// r := graphql.Do(params)
+		// return events.LambdaFunctionURLResponse{StatusCode: 200, Body: "Query received and processed (placeholder). Received GraphQL Query: %s\n" + gqlRequest.Query + "  "}, nil
 		// ... your GraphQL execution logic resulting in 'r' ...
 		//var r *graphql.Result // Assume 'r' is populated here
 
 		// Example: Create a dummy result for demonstration
-		r = &graphql.Result{
-			Data: map[string]interface{}{
-				"query": query1,
-			},
-		}
+		// r = &graphql.Result{
+		// 	Data: map[string]interface{}{
+		// 		"query": r.Data,
+		// 	},
+		// }
 
-		jsonBytes, err := json.Marshal(r)
-		if err != nil {
-			fmt.Println("Error marshalling to JSON:", err)
-			//return
-			return events.LambdaFunctionURLResponse{StatusCode: 400, Body: "Error occurred." + err.Error()}, nil
-		}
+		// jsonBytes, err := json.Marshal(r)
+		// if err != nil {
+		// 	fmt.Println("Error marshalling to JSON:", err)
+		// 	//return
+		// 	return events.LambdaFunctionURLResponse{StatusCode: 400, Body: "Error occurred." + err.Error()}, nil
+		// }
 
-		jsonString := string(jsonBytes)
-		fmt.Println(jsonString)
+		// jsonString := string(jsonBytes)
+		// fmt.Println(jsonString)
 
-		if len(r.Errors) > 0 {
-			log.Fatalf("failed to execute graphql operation, errors: %+v", r.Errors)
-			return events.LambdaFunctionURLResponse{StatusCode: 400, Body: "Error occurred." + string(jsonString)}, nil
-		}
-		rJSON1, _ := json.Marshal(r)
-		fmt.Printf("%s \n", rJSON1)
-		return events.LambdaFunctionURLResponse{StatusCode: 200, Body: "completed query/mutation: " + string(rJSON1)}, nil
+		// if len(r.Errors) > 0 {
+		// 	log.Fatalf("failed to execute graphql operation, errors: %+v", r.Errors)
+		// 	return events.LambdaFunctionURLResponse{StatusCode: 400, Body: "Error occurred." + string(jsonString)}, nil
+		// }
+		// rJSON1, _ := json.Marshal(r)
+		// fmt.Printf("%s \n", rJSON1)
+		// return events.LambdaFunctionURLResponse{StatusCode: 200, Body: "completed query/mutation: " + string(rJSON1)}, nil
 
 		//TEST november 7, 2025
 		// // // Mutation manual test
