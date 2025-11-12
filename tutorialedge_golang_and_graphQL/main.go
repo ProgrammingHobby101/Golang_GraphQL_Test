@@ -195,7 +195,7 @@ func my_init() { //only run on cold starts
 }
 
 func handleHealth() events.LambdaFunctionURLResponse {
-	message := "Hello Healthy World! Watching the Tamron Hall Show."
+	message := "Hello Healthy World2! Watching the Tamron Hall Show."
 	return events.LambdaFunctionURLResponse{StatusCode: 200, Body: message}
 }
 
@@ -332,7 +332,7 @@ func HandleRequest(request events.LambdaFunctionURLRequest) (events.LambdaFuncti
 
 		// check for null value in the resulting query
 		if string(graphqlResultJSON_Data) == "null" {
-			return events.LambdaFunctionURLResponse{StatusCode: 400, Body: "Error graphql result was: " + string(graphqlResultJSON_Data)}, nil
+			return events.LambdaFunctionURLResponse{StatusCode: 400, Body: "Error graphql result was: " + string(graphqlResultJSON_Data) + " , gqlRequest.Query: " + gqlRequest.Query}, nil
 		}
 		return events.LambdaFunctionURLResponse{StatusCode: 200, Body: "graphql result is: " + string(graphqlResultJSON_Data)}, nil
 
