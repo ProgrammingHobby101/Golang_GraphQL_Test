@@ -1,5 +1,5 @@
 // source code; https://tutorialedge.net/golang/go-graphql-beginners-tutorial/
-
+// the field names in the tutorialedge tutorial are case sensitive, (see line #35;  author := &Author{Name: "Elliot Forbes", Tutorials: []int{1, 2, 3}}  )
 package main
 
 import (
@@ -33,7 +33,7 @@ type Comment struct {
 var schema graphql.Schema
 
 func populate() []Tutorial {
-	author := &Author{Name: "Elliot Forbes", Tutorials: []int{1, 2, 3}}
+	author := &Author{Name: "Elliot Forbes", Tutorials: []int{0, 1, 2}} //fields of this initialization are case-sensitive.
 	tutorial := Tutorial{
 		ID:     0,
 		Title:  "Go GraphQL Tutorial",
