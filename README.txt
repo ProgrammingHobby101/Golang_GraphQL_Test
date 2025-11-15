@@ -1,6 +1,27 @@
-Error Correction
--------------------
-502 Bad Gateway - I was getting this error when added "/" home path to the API Gateway, so deleting this endpoint on the API Gateway got rid of the error.
+Shape of Data
+----------------
+- Meals: Thanksgiving.
+^ Dishes
+	^- chopped turkey.
+	^- Mashed potatoes
+	^- Bread Rolls
+	^- Mac and cheese
+instructions(apart of each Dish.)
+^ ingredients
+	^- Roasted: A traditional roast turkey, often infused with herbs and butter.
+	^- potatoes with butter. instruction: mash the potatoes.
+	^- King's Hawaiian Original Sweet Rolls
+	^- Macaroni noodles and cheese
+- Meals: New Years. 
+^ Dishes;
+	^- black eye peas
+	^- turnip greens
+^ ingredients 	
+	^- black eye peas
+	^- turnip greens
+categories: (allow Author to add tags/categories)
+instructions(apart of each Dish.)
+
 
 Working command in Windows OS Powershell and Git-Bash
 ---------------------------------------------------------
@@ -88,3 +109,7 @@ I got the main code from
 Permissions Info (AWS CLOUD permission)
 ------------------------------------------
 By default, Lambda will create an execution role with permissions to upload logs to Amazon CloudWatch Logs. You can customize this default role later when adding triggers.
+
+Error Correction
+-------------------
+502 Bad Gateway - I was getting this error when added "/" home path to the API Gateway, so deleting this endpoint on the API Gateway got rid of the error.
