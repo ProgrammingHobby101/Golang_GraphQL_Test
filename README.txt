@@ -1,17 +1,20 @@
 Shape of Data
 ----------------
+- Categories of Meals should be put at the root level of the "Meal". 
 - Meals: Thanksgiving.
 ^ Dishes
 	^- chopped turkey.
 	^- Mashed potatoes
 	^- Bread Rolls
 	^- Mac and cheese
-instructions(apart of each Dish.)
+instructions(apart of each Dish.): https://www.google.com/search?q=thanksgiving+dishes+with+turkey
 ^ ingredients
 	^- Roasted: A traditional roast turkey, often infused with herbs and butter.
 	^- potatoes with butter. instruction: mash the potatoes.
 	^- King's Hawaiian Original Sweet Rolls
 	^- Macaroni noodles and cheese
+categories: (allow Author to add tags/categories)
+
 - Meals: New Years. 
 ^ Dishes;
 	^- black eye peas
@@ -19,9 +22,22 @@ instructions(apart of each Dish.)
 ^ ingredients 	
 	^- black eye peas
 	^- turnip greens
-categories: (allow Author to add tags/categories)
-instructions(apart of each Dish.)
+categories/tags: (allow Author to add tags/categories)
+instructions(apart of each Dish.):
 
+Installing AWS LocalStack for running AWS serverless locally on my laptop
+---------------------------------------------------------------------------------
+- Sign in with my AWS credentials using the "AWS" extension on the far left menu.
+- Ensure the AWS CLI is installed(by clicking on AWS icon[on left side] -> then click "Walkthrough of Application Builder" under "Application Builder" ).
+- Install SAM CLI (by clicking on AWS icon[on left side] -> then click "Walkthrough of Application Builder" under "Application Builder" ).
+- Install Docker CLI (by clicking on AWS icon[on left side] -> then click "Walkthrough of Application Builder" under "Application Builder" ).
+- Install "LocalStack" (by clicking on AWS icon[on left side] -> then click "Walkthrough of Application Builder" under "Application Builder" ). 
+- To use the Lambda Serverless project template, by clicking on AWS icon[on left side] -> then click "Application Builder", then click on the Three dots next to the "Application Builder", then click on "Create Application with Serverless Template", then select my project coding language. 
+
+Ideals for later, for Shape of Data?
+----------------------------------------------
+courses in meals(eg. courses like for example appetizers and deserts and main entree.)
+grocery list?
 
 Working command in Windows OS Powershell and Git-Bash
 ---------------------------------------------------------
