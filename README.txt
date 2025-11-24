@@ -25,6 +25,16 @@ categories: (allow Author to add tags/categories)
 categories/tags: (allow Author to add tags/categories)
 instructions(apart of each Dish.):
 
+- Meal: Hamburger Helper.
+^ Dishes; Hamburger Helper
+^ ingredients 
+         ^- ground beef
+         ^- macaroni noodles
+         ^- cheesy cheddar sauce
+categories/tags: (allow Author to add tags/categories)
+instructions(apart of each Dish.):
+
+
 Installing AWS LocalStack for running AWS serverless locally on my laptop
 ---------------------------------------------------------------------------------
 - Sign in with my AWS credentials using the "AWS" extension on the far left menu.

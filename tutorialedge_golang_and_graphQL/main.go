@@ -12,18 +12,25 @@ import (
 	"github.com/graphql-go/graphql"
 )
 
-var tutorials []Tutorial
+var Meals []Meal //Tutorial
 
-type Tutorial struct {
-	ID       int
-	Title    string
-	Author   Author
-	Comments []Comment
+type Meal struct { //old name=Tutorial
+	ID        int       //old name=ID , Primary Key
+	Author    Author    //old name=Author , foriegn key from Author table.
+	Meal_Name string    //old name=Title
+	Dishs     []Dish    //new field
+	Comments  []Comment //from Users not being the Author of this Meal, and from Author of this meal.
 }
-
+type Dish struct {
+	DishName    string
+	Ingredients []Ingredient
+}
+type Ingredient struct {
+	Ingredient_Name string
+}
 type Author struct {
-	Name      string
-	Tutorials []int
+	Name string //Author of Meal
+	Meal []int  //old name=Tutorial
 }
 
 type Comment struct {
@@ -32,19 +39,19 @@ type Comment struct {
 
 var schema graphql.Schema
 
-func populate() []Tutorial {
-	author := &Author{Name: "Elliot Forbes", Tutorials: []int{0, 1, 2}} //fields of this initialization are case-sensitive.
-	tutorial := Tutorial{
-		ID:     0,
-		Title:  "Go GraphQL Tutorial",
-		Author: *author,
+func populate() []Meal {
+	author := &Author{Name: "Nicholas Donald", Meal: []int{0, 1, 2}} //fields of this initialization are case-sensitive.
+	tutorial := Meal{
+		ID:        0,
+		Meal_Name: "Thanksgiving",
+		Author:    *author,
 		Comments: []Comment{
 			Comment{Body: "First Comment"},
 		},
 	}
-	tutorial2 := Tutorial{
+	tutorial2 := Meal{
 		ID:     1,
-		Title:  "Go GraphQL Tutorial - Part 2",
+		Title:  "New Years Day",
 		Author: *author,
 		Comments: []Comment{
 			Comment{Body: "Second Comment"},
@@ -52,7 +59,7 @@ func populate() []Tutorial {
 	}
 	tutorial3 := Tutorial{
 		ID:     2,
-		Title:  "Go GraphQL Tutorial - Part 3",
+		Title:  "Ramen Noodles",
 		Author: *author,
 		Comments: []Comment{
 			Comment{Body: "Third Comment"},
