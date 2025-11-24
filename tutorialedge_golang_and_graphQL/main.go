@@ -12,7 +12,7 @@ import (
 	"github.com/graphql-go/graphql"
 )
 
-var Meals []Meal //old name=Tutorials [Tutorial]
+var meals []Meal //old name=Tutorials [Tutorial]
 
 type Meal struct { //old name=Tutorial
 	ID        int       //old name=ID , Primary Key
@@ -29,25 +29,25 @@ type Ingredient struct { //new struct
 	Ingredient_Name string
 }
 type Author struct {
-	Name string //Author of Meal , need to make query to check it user exist on new user creations.
-	Meal []int  //old name=Tutorial, foreign key, and it's from the Meal table.
+	Name  string //Author of Meal , need to make query to check it user exist on new user creations.
+	Meals []int  //old name=Tutorial, foreign key, and it's from the Meal table.
 }
 
 type Comment struct {
 	Body   string //oldname=Body
-	Author Author //new field
+	Author string //new field
 }
 
 var schema graphql.Schema
 
 func populate() []Meal {
-	author := &Author{Name: "Nicholas Donald", Meal: []int{0, 1, 2}} //fields of this initialization are case-sensitive.
-	meal1 := Meal{                                                   //oldname 'tutorial'
+	author := &Author{Name: "Nicholas Donald", Meals: []int{0, 1, 2}} //fields of this initialization are case-sensitive.
+	meal1 := Meal{                                                    //oldname 'tutorial'
 		ID:        0,
 		Meal_Name: "Thanksgiving",
 		Author:    *author,
 		Comments: []Comment{
-			Comment{Body: "First Comment"},
+			Comment{Body: "First Comment", Author: "Nicholas Donald"},
 		},
 	}
 	meal2 := Meal{ //oldname=tutorial2
@@ -55,7 +55,7 @@ func populate() []Meal {
 		Meal_Name: "New Years Day",
 		Author:    *author,
 		Comments: []Comment{
-			Comment{Body: "Second Comment"},
+			Comment{Body: "Second Comment", Author: "Nicholas Donald"},
 		},
 	}
 	meal3 := Meal{ //oldname=tutorial3
@@ -63,7 +63,7 @@ func populate() []Meal {
 		Meal_Name: "Ramen Noodles",
 		Author:    *author,
 		Comments: []Comment{
-			Comment{Body: "Third Comment"},
+			Comment{Body: "Third Comment", Author: "Nicholas Donald"},
 		},
 	}
 
@@ -88,6 +88,29 @@ var authorType = graphql.NewObject(
 		},
 	},
 )
+var ingredientType = graphql.NewObject(
+	graphql.ObjectConfig{
+		Name: "Dish",
+		Fields: graphql.Fields{
+			"ingredients": &graphql.Field{ //new field
+				Type: graphql.NewList(graphql.String), //need to update to replace "graphql.String" with type of ingredients.
+			},
+		},
+	},
+)
+var dishType = graphql.NewObject(
+	graphql.ObjectConfig{
+		Name: "Dish",
+		Fields: graphql.Fields{
+			"dishname": &graphql.Field{
+				Type: graphql.String,
+			},
+			"ingredients": &graphql.Field{ //new field
+				Type: graphql.NewList(ingredientType), //need to update to replace "graphql.String" with type of ingredients.
+			},
+		},
+	},
+)
 
 var commentType = graphql.NewObject(
 	graphql.ObjectConfig{
@@ -96,23 +119,30 @@ var commentType = graphql.NewObject(
 			"body": &graphql.Field{
 				Type: graphql.String,
 			},
+			"author": &graphql.Field{ //new field
+				Type: graphql.String,
+			},
 		},
 	},
 )
 
-var tutorialType = graphql.NewObject(
+var mealType = graphql.NewObject( //oldname=tutorialType
 	graphql.ObjectConfig{
 		Name: "Meal",
 		Fields: graphql.Fields{
 			"id": &graphql.Field{
 				Type: graphql.Int,
 			},
-			"title": &graphql.Field{
+			"meal_name": &graphql.Field{
 				Type: graphql.String,
 			},
 			"author": &graphql.Field{
 				Type: authorType,
 			},
+			"dishes": &graphql.Field{
+				Type: graphql.NewList(dishType),
+			},
+
 			"comments": &graphql.Field{
 				Type: graphql.NewList(commentType),
 			},
@@ -124,19 +154,19 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 	Name: "Mutation",
 	Fields: graphql.Fields{
 		"create": &graphql.Field{
-			Type:        tutorialType,
-			Description: "Create a new Tutorial",
+			Type:        mealType,
+			Description: "Create a new Meal",
 			Args: graphql.FieldConfigArgument{
-				"title": &graphql.ArgumentConfig{
+				"meal_name": &graphql.ArgumentConfig{
 					Type: graphql.NewNonNull(graphql.String),
 				},
 			},
 			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
-				tutorial := Meal{
-					Meal_Name: params.Args["title"].(string),
+				meal := Meal{
+					Meal_Name: params.Args["meal_name"].(string),
 				}
-				tutorials = append(tutorials, tutorial)
-				return tutorial, nil
+				meals = append(meals, meal)
+				return meal, nil
 			},
 		},
 	},
@@ -155,13 +185,13 @@ func main() {
 }
 
 func my_init() { //only run on cold starts
-	tutorials = populate() //only run on cold starts
+	meals = populate() //only run on cold starts
 
 	// Schema
 	fields := graphql.Fields{
-		"tutorial": &graphql.Field{
-			Type:        tutorialType,
-			Description: "Get Tutorial By ID",
+		"meal": &graphql.Field{ //oldname=tutorial
+			Type:        mealType,
+			Description: "Get Meal By ID",
 			Args: graphql.FieldConfigArgument{
 				"id": &graphql.ArgumentConfig{
 					Type: graphql.Int,
@@ -171,9 +201,9 @@ func my_init() { //only run on cold starts
 				id, ok := p.Args["id"].(int)
 				if ok {
 					// Find tutorial
-					for _, tutorial := range tutorials {
-						if int(tutorial.ID) == id {
-							return tutorial, nil
+					for _, meal := range meals {
+						if int(meal.ID) == id {
+							return meal, nil
 						}
 					}
 				}
@@ -181,10 +211,10 @@ func my_init() { //only run on cold starts
 			},
 		},
 		"list": &graphql.Field{
-			Type:        graphql.NewList(tutorialType),
-			Description: "Get Tutorial List",
+			Type:        graphql.NewList(mealType),
+			Description: "Get Meal List",
 			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
-				return Meals, nil // oldname=tutorials, nil
+				return meals, nil // oldname=tutorials, nil
 			},
 		},
 	}
