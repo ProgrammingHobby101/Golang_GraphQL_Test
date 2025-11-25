@@ -46,6 +46,12 @@ func populate() []Meal {
 		ID:        0,
 		Meal_Name: "Thanksgiving",
 		Author:    *author,
+		Dishes: []Dish{
+			Dish{DishName: "sliced turkey", Ingredients: []Ingredient{Ingredient{Ingredient_Name: "A traditional roast turkey, often infused with herbs and butter."}}},
+			Dish{DishName: "Mashed potatoes", Ingredients: []Ingredient{Ingredient{Ingredient_Name: "Potatoes with butter."}}},
+			Dish{DishName: "Bread Rolls", Ingredients: []Ingredient{Ingredient{Ingredient_Name: "King's Hawaiian Original Sweet Rolls."}}},
+			Dish{DishName: "Mac and cheese", Ingredients: []Ingredient{Ingredient{Ingredient_Name: "Macaroni noodles and cheese."}}},
+		},
 		Comments: []Comment{
 			Comment{Body: "First Comment", Author: "Nicholas Donald"},
 		},
@@ -90,7 +96,7 @@ var authorType = graphql.NewObject(
 )
 var ingredientType = graphql.NewObject(
 	graphql.ObjectConfig{
-		Name: "Dish",
+		Name: "Ingredient",
 		Fields: graphql.Fields{
 			"ingredients": &graphql.Field{ //new field
 				Type: graphql.NewList(graphql.String), //need to update to replace "graphql.String" with type of ingredients.
@@ -142,7 +148,6 @@ var mealType = graphql.NewObject( //oldname=tutorialType
 			"dishes": &graphql.Field{
 				Type: graphql.NewList(dishType),
 			},
-
 			"comments": &graphql.Field{
 				Type: graphql.NewList(commentType),
 			},

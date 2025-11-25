@@ -1,16 +1,22 @@
-Shape of Data
-----------------
+Ideals for later, for Shape of Data?
+----------------------------------------------
+courses in meals(eg. courses like for example appetizers and deserts and main entree.)
+grocery list?
+
+
+Shape of Data (see "Ideals for later, for Shape of Data?")
+----------------------------------------------------------------------
 - Categories of Meals should be put at the root level of the "Meal". 
 - Meals: Thanksgiving.
 ^ Dishes
-	^- chopped turkey.
+	^- sliced turkey.
 	^- Mashed potatoes
 	^- Bread Rolls
 	^- Mac and cheese
-instructions(apart of each Dish.): https://www.google.com/search?q=thanksgiving+dishes+with+turkey
+instructions(apart of each Dish.): https://www.google.com/search?q=thanksgiving+dishes+with+turkey, instruction: mash the "potatoes with butter". Roast the Turkey.
 ^ ingredients
-	^- Roasted: A traditional roast turkey, often infused with herbs and butter.
-	^- potatoes with butter. instruction: mash the potatoes.
+	^- A traditional roast turkey, often infused with herbs and butter.
+	^- potatoes with butter. 
 	^- King's Hawaiian Original Sweet Rolls
 	^- Macaroni noodles and cheese
 categories: (allow Author to add tags/categories)
@@ -44,10 +50,6 @@ Installing AWS LocalStack for running AWS serverless locally on my laptop
 - Install "LocalStack" (by clicking on AWS icon[on left side] -> then click "Walkthrough of Application Builder" under "Application Builder" ). 
 - To use the Lambda Serverless project template, by clicking on AWS icon[on left side] -> then click "Application Builder", then click on the Three dots next to the "Application Builder", then click on "Create Application with Serverless Template", then select my project coding language. 
 
-Ideals for later, for Shape of Data?
-----------------------------------------------
-courses in meals(eg. courses like for example appetizers and deserts and main entree.)
-grocery list?
 
 Working command in Windows OS Powershell and Git-Bash
 ---------------------------------------------------------
