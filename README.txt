@@ -16,9 +16,9 @@ Shape of Data (see "Ideals for later, for Shape of Data?")
 instructions(apart of each Dish.): https://www.google.com/search?q=thanksgiving+dishes+with+turkey, instruction: mash the "potatoes with butter". Roast the Turkey.
 ^ ingredients
 	^- A traditional roast turkey, often infused with herbs and butter.
-	^- potatoes with butter. 
+	^- potatoes. Butter. 
 	^- King's Hawaiian Original Sweet Rolls
-	^- Macaroni noodles and cheese
+	^- Macaroni noodles. Cheese.
 categories: (allow Author to add tags/categories)
 
 - Meals: New Years. 
@@ -27,9 +27,9 @@ categories: (allow Author to add tags/categories)
 	^- turnip greens
 	^- sweet potato pie
 ^ ingredients 	
-	^- black eye peas
-	^- turnip greens
-	^- sweet potatoes.
+	^- black eye peas. Bacon.
+	^- turnip greens. Salt. Onion.
+	^- sweet potatoes. pie crust. sugar.
 categories/tags: (allow Author to add tags/categories)
 instructions(apart of each Dish.):
 

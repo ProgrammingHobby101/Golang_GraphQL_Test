@@ -47,10 +47,10 @@ func populate() []Meal {
 		Meal_Name: "Thanksgiving",
 		Author:    *author,
 		Dishes: []Dish{
-			{DishName: "sliced turkey", Ingredients: []Ingredient{{Ingredient_Name: "A traditional roast turkey, often infused with herbs and butter."}}},
-			{DishName: "Mashed potatoes", Ingredients: []Ingredient{{Ingredient_Name: "Potatoes with butter."}}},
-			{DishName: "Bread Rolls", Ingredients: []Ingredient{{Ingredient_Name: "King's Hawaiian Original Sweet Rolls."}}},
-			{DishName: "Mac and cheese", Ingredients: []Ingredient{{Ingredient_Name: "Macaroni noodles and cheese."}}},
+			{DishName: "Sliced turkey", Ingredients: []Ingredient{{Ingredient_Name: "A traditional roast turkey"}, {Ingredient_Name: "Herbs"}, {Ingredient_Name: "Butter"}}},
+			{DishName: "Mashed potatoes", Ingredients: []Ingredient{{Ingredient_Name: "Potatoes"}, {Ingredient_Name: "Butter"}}},
+			{DishName: "Bread Rolls", Ingredients: []Ingredient{{Ingredient_Name: "King's Hawaiian Original Sweet Rolls"}}},
+			{DishName: "Mac and cheese", Ingredients: []Ingredient{{Ingredient_Name: "Macaroni noodles"}, {Ingredient_Name: "Cheese"}}},
 		},
 		Comments: []Comment{
 			{Body: "First Comment", Author: "Nicholas Donald"},
@@ -61,9 +61,9 @@ func populate() []Meal {
 		Meal_Name: "New Years Day",
 		Author:    *author,
 		Dishes: []Dish{
-			{DishName: "black eye peas", Ingredients: []Ingredient{Ingredient{Ingredient_Name: "A traditional roast turkey, often infused with herbs and butter."}}},
-			{DishName: "turnip greens", Ingredients: []Ingredient{Ingredient{Ingredient_Name: "Potatoes with butter."}}},
-			{DishName: "sweet potato pie", Ingredients: []Ingredient{Ingredient{Ingredient_Name: "sweet potatoes."}}},
+			{DishName: "Black eye peas", Ingredients: []Ingredient{{Ingredient_Name: "Black eye peas"}, {Ingredient_Name: "Bacon"}}},
+			{DishName: "Turnip greens", Ingredients: []Ingredient{{Ingredient_Name: "Turnip greens"}, {Ingredient_Name: "Salt"}, {Ingredient_Name: "Onion"}}},
+			{DishName: "Sweet potato pie", Ingredients: []Ingredient{{Ingredient_Name: "Sweet potatoes"}, {Ingredient_Name: "Pie crust"}, {Ingredient_Name: "Sugar"}}},
 		},
 		Comments: []Comment{
 			{Body: "Second Comment", Author: "Nicholas Donald"},
@@ -75,11 +75,11 @@ func populate() []Meal {
 		Author:    *author,
 		Dishes: []Dish{
 			{
-				DishName: "ground beef",
+				DishName: "Hamburger Helper",
 				Ingredients: []Ingredient{
-					{Ingredient_Name: "ground beef"},
-					{Ingredient_Name: "macaroni noodles"},
-					{Ingredient_Name: "cheesy cheddar sauce"},
+					{Ingredient_Name: "Ground beef"},
+					{Ingredient_Name: "Macaroni noodles"},
+					{Ingredient_Name: "Cheesy cheddar sauce"},
 				}}},
 		Comments: []Comment{
 			{Body: "Third Comment", Author: "Nicholas Donald"},
