@@ -25,9 +25,11 @@ categories: (allow Author to add tags/categories)
 ^ Dishes;
 	^- black eye peas
 	^- turnip greens
+	^- sweet potato pie
 ^ ingredients 	
 	^- black eye peas
 	^- turnip greens
+	^- sweet potatoes.
 categories/tags: (allow Author to add tags/categories)
 instructions(apart of each Dish.):
 

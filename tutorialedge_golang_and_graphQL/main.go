@@ -47,29 +47,42 @@ func populate() []Meal {
 		Meal_Name: "Thanksgiving",
 		Author:    *author,
 		Dishes: []Dish{
-			Dish{DishName: "sliced turkey", Ingredients: []Ingredient{Ingredient{Ingredient_Name: "A traditional roast turkey, often infused with herbs and butter."}}},
-			Dish{DishName: "Mashed potatoes", Ingredients: []Ingredient{Ingredient{Ingredient_Name: "Potatoes with butter."}}},
-			Dish{DishName: "Bread Rolls", Ingredients: []Ingredient{Ingredient{Ingredient_Name: "King's Hawaiian Original Sweet Rolls."}}},
-			Dish{DishName: "Mac and cheese", Ingredients: []Ingredient{Ingredient{Ingredient_Name: "Macaroni noodles and cheese."}}},
+			{DishName: "sliced turkey", Ingredients: []Ingredient{{Ingredient_Name: "A traditional roast turkey, often infused with herbs and butter."}}},
+			{DishName: "Mashed potatoes", Ingredients: []Ingredient{{Ingredient_Name: "Potatoes with butter."}}},
+			{DishName: "Bread Rolls", Ingredients: []Ingredient{{Ingredient_Name: "King's Hawaiian Original Sweet Rolls."}}},
+			{DishName: "Mac and cheese", Ingredients: []Ingredient{{Ingredient_Name: "Macaroni noodles and cheese."}}},
 		},
 		Comments: []Comment{
-			Comment{Body: "First Comment", Author: "Nicholas Donald"},
+			{Body: "First Comment", Author: "Nicholas Donald"},
 		},
 	}
 	meal2 := Meal{ //oldname=tutorial2
 		ID:        1,
 		Meal_Name: "New Years Day",
 		Author:    *author,
+		Dishes: []Dish{
+			{DishName: "black eye peas", Ingredients: []Ingredient{Ingredient{Ingredient_Name: "A traditional roast turkey, often infused with herbs and butter."}}},
+			{DishName: "turnip greens", Ingredients: []Ingredient{Ingredient{Ingredient_Name: "Potatoes with butter."}}},
+			{DishName: "sweet potato pie", Ingredients: []Ingredient{Ingredient{Ingredient_Name: "sweet potatoes."}}},
+		},
 		Comments: []Comment{
-			Comment{Body: "Second Comment", Author: "Nicholas Donald"},
+			{Body: "Second Comment", Author: "Nicholas Donald"},
 		},
 	}
 	meal3 := Meal{ //oldname=tutorial3
 		ID:        2,
-		Meal_Name: "Ramen Noodles",
+		Meal_Name: "Hamburger Helper",
 		Author:    *author,
+		Dishes: []Dish{
+			{
+				DishName: "ground beef",
+				Ingredients: []Ingredient{
+					{Ingredient_Name: "ground beef"},
+					{Ingredient_Name: "macaroni noodles"},
+					{Ingredient_Name: "cheesy cheddar sauce"},
+				}}},
 		Comments: []Comment{
-			Comment{Body: "Third Comment", Author: "Nicholas Donald"},
+			{Body: "Third Comment", Author: "Nicholas Donald"},
 		},
 	}
 
@@ -98,8 +111,8 @@ var ingredientType = graphql.NewObject(
 	graphql.ObjectConfig{
 		Name: "Ingredient",
 		Fields: graphql.Fields{
-			"ingredients": &graphql.Field{ //new field
-				Type: graphql.NewList(graphql.String), //need to update to replace "graphql.String" with type of ingredients.
+			"ingredient_name": &graphql.Field{ //new field and this is singular without an 's'. while the ingredient in dishType is plural meaning with an 's'
+				Type: graphql.String, //need to update to replace "graphql.String" with type of ingredients.
 			},
 		},
 	},
