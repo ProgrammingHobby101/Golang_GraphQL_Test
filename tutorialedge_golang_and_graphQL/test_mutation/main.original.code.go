@@ -205,21 +205,4 @@ func main() {
 	}
 	rJSON, _ = json.Marshal(r)
 	fmt.Printf("%s \n", rJSON)
-
-	// Query
-	query = `
-		mutation{
-				create(title: "my test book") {
-				    id
-					title
-				}
-		}
-	`
-	params = graphql.Params{Schema: schema, RequestString: query}
-	r = graphql.Do(params)
-	if len(r.Errors) > 0 {
-		log.Fatalf("failed to execute graphql operation, errors: %+v", r.Errors)
-	}
-	rJSON, _ = json.Marshal(r)
-	fmt.Printf("%s \n", rJSON)
 }

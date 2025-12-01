@@ -42,6 +42,18 @@ instructions(apart of each Dish.):
 categories/tags: (allow Author to add tags/categories)
 instructions(apart of each Dish.):
 
+- Meal: Christmas Dinner	(Famous Christmas food dishes)
+^ Dishes; 
+	^- Stuffing
+	^- Lasagna
+	^- Cranberry sauce
+	^- Green bean casserole
+^ ingredients
+	^- Bread base, Sage herb, Parsley herb, Rosemary herb
+	^- Lasagna noodles, Lean ground beef, Black pepper seasoning, 		   Marinara sauce, Mozzarella cheese
+	^- Cranberries, Sugar, Water, Orange juice
+	^- Green beans, French fried onions, Cream of mushroom soup 
+
 
 Installing AWS LocalStack for running AWS serverless locally on my laptop
 ---------------------------------------------------------------------------------

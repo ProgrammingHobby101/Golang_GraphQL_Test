@@ -1,5 +1,6 @@
 // source code; https://tutorialedge.net/golang/go-graphql-beginners-tutorial/
 // the field names in the tutorialedge tutorial are case sensitive, (see line #35;  author := &Author{Name: "Elliot Forbes", Tutorials: []int{1, 2, 3}}  )
+// from file:   main_original_code_that_reads_query from_client_from_TutorialEdge.go
 package main
 
 import (
@@ -12,87 +13,60 @@ import (
 	"github.com/graphql-go/graphql"
 )
 
-var meals []Meal //old name=Tutorials [Tutorial]
+var tutorials []Tutorial
 
-type Meal struct { //old name=Tutorial
-	ID        int       //old name=ID , Primary Key
-	Author    Author    //old name=Author , foriegn key from Author table.
-	Meal_Name string    //old name=Title
-	Dishes    []Dish    //new field
-	Comments  []Comment //from Users not being the Author of this Meal, and from Author of this meal.
+type Tutorial struct {
+	ID       int
+	Title    string
+	Author   Author
+	Comments []Comment
 }
-type Dish struct { //new struct
-	DishName    string
-	Ingredients []Ingredient
-}
-type Ingredient struct { //new struct
-	Ingredient_Name string
-}
+
 type Author struct {
-	Name  string //Author of Meal , need to make query to check it user exist on new user creations.
-	Meals []int  //old name=Tutorial, foreign key, and it's from the Meal table.
+	Name      string
+	Tutorials []int
 }
 
 type Comment struct {
-	Body   string //oldname=Body
-	Author string //new field
+	Body string
 }
 
 var schema graphql.Schema
 
-func populate() []Meal {
-	author := &Author{Name: "Nicholas Donald", Meals: []int{0, 1, 2}} //fields of this initialization are case-sensitive.
-	meal1 := Meal{                                                    //oldname 'tutorial'
-		ID:        0,
-		Meal_Name: "Thanksgiving",
-		Author:    *author,
-		Dishes: []Dish{
-			{DishName: "Sliced turkey", Ingredients: []Ingredient{{Ingredient_Name: "A traditional roast turkey"}, {Ingredient_Name: "Herbs"}, {Ingredient_Name: "Butter"}}},
-			{DishName: "Mashed potatoes", Ingredients: []Ingredient{{Ingredient_Name: "Potatoes"}, {Ingredient_Name: "Butter"}}},
-			{DishName: "Bread Rolls", Ingredients: []Ingredient{{Ingredient_Name: "King's Hawaiian Original Sweet Rolls"}}},
-			{DishName: "Mac and cheese", Ingredients: []Ingredient{{Ingredient_Name: "Macaroni noodles"}, {Ingredient_Name: "Cheese"}}},
-		},
+func populate() []Tutorial {
+	author := &Author{Name: "Elliot Forbes", Tutorials: []int{0, 1, 2}} //fields of this initialization are case-sensitive.
+	tutorial := Tutorial{
+		ID:     0,
+		Title:  "Go GraphQL Tutorial",
+		Author: *author,
 		Comments: []Comment{
-			{Body: "First Comment", Author: "Nicholas Donald"},
+			Comment{Body: "First Comment"},
 		},
 	}
-	meal2 := Meal{ //oldname=tutorial2
-		ID:        1,
-		Meal_Name: "New Years Day",
-		Author:    *author,
-		Dishes: []Dish{
-			{DishName: "Black eye peas", Ingredients: []Ingredient{{Ingredient_Name: "Black eye peas"}, {Ingredient_Name: "Bacon"}}},
-			{DishName: "Turnip greens", Ingredients: []Ingredient{{Ingredient_Name: "Turnip greens"}, {Ingredient_Name: "Salt"}, {Ingredient_Name: "Onion"}}},
-			{DishName: "Sweet potato pie", Ingredients: []Ingredient{{Ingredient_Name: "Sweet potatoes"}, {Ingredient_Name: "Pie crust"}, {Ingredient_Name: "Sugar"}}},
-		},
+	tutorial2 := Tutorial{
+		ID:     1,
+		Title:  "Go GraphQL Tutorial - Part 2",
+		Author: *author,
 		Comments: []Comment{
-			{Body: "Second Comment", Author: "Nicholas Donald"},
+			Comment{Body: "Second Comment"},
 		},
 	}
-	meal3 := Meal{ //oldname=tutorial3
-		ID:        2,
-		Meal_Name: "Hamburger Helper",
-		Author:    *author,
-		Dishes: []Dish{
-			{
-				DishName: "Hamburger Helper",
-				Ingredients: []Ingredient{
-					{Ingredient_Name: "Ground beef"},
-					{Ingredient_Name: "Macaroni noodles"},
-					{Ingredient_Name: "Cheesy cheddar sauce"},
-				}}},
+	tutorial3 := Tutorial{
+		ID:     2,
+		Title:  "Go GraphQL Tutorial - Part 3",
+		Author: *author,
 		Comments: []Comment{
-			{Body: "Third Comment", Author: "Nicholas Donald"},
+			Comment{Body: "Third Comment"},
 		},
 	}
 
-	var meals []Meal             //oldname tutorials
-	meals = append(meals, meal1) ///oldname=tutorial
-	meals = append(meals, meal2) //oldname=tutorial2
-	meals = append(meals, meal3) //oldname=tutorial3
+	var tutorials []Tutorial
+	tutorials = append(tutorials, tutorial)
+	tutorials = append(tutorials, tutorial2)
+	tutorials = append(tutorials, tutorial3)
 
-	return meals //oldname=tutorials
-} //populate method
+	return tutorials
+}
 
 var authorType = graphql.NewObject(
 	graphql.ObjectConfig{
@@ -101,31 +75,8 @@ var authorType = graphql.NewObject(
 			"Name": &graphql.Field{
 				Type: graphql.String,
 			},
-			"Meals": &graphql.Field{
+			"Tutorials": &graphql.Field{
 				Type: graphql.NewList(graphql.Int),
-			},
-		},
-	},
-)
-var ingredientType = graphql.NewObject(
-	graphql.ObjectConfig{
-		Name: "Ingredient",
-		Fields: graphql.Fields{
-			"ingredient_name": &graphql.Field{ //new field and this is singular without an 's'. while the ingredient in dishType is plural meaning with an 's'
-				Type: graphql.String, //need to update to replace "graphql.String" with type of ingredients.
-			},
-		},
-	},
-)
-var dishType = graphql.NewObject(
-	graphql.ObjectConfig{
-		Name: "Dish",
-		Fields: graphql.Fields{
-			"dishname": &graphql.Field{
-				Type: graphql.String,
-			},
-			"ingredients": &graphql.Field{ //new field
-				Type: graphql.NewList(ingredientType), //need to update to replace "graphql.String" with type of ingredients.
 			},
 		},
 	},
@@ -138,28 +89,22 @@ var commentType = graphql.NewObject(
 			"body": &graphql.Field{
 				Type: graphql.String,
 			},
-			"author": &graphql.Field{ //new field
-				Type: graphql.String,
-			},
 		},
 	},
 )
 
-var mealType = graphql.NewObject( //oldname=tutorialType
+var tutorialType = graphql.NewObject(
 	graphql.ObjectConfig{
-		Name: "Meal",
+		Name: "Tutorial",
 		Fields: graphql.Fields{
 			"id": &graphql.Field{
 				Type: graphql.Int,
 			},
-			"meal_name": &graphql.Field{
+			"title": &graphql.Field{
 				Type: graphql.String,
 			},
 			"author": &graphql.Field{
 				Type: authorType,
-			},
-			"dishes": &graphql.Field{
-				Type: graphql.NewList(dishType),
 			},
 			"comments": &graphql.Field{
 				Type: graphql.NewList(commentType),
@@ -172,23 +117,19 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 	Name: "Mutation",
 	Fields: graphql.Fields{
 		"create": &graphql.Field{
-			Type:        mealType,
-			Description: "Create a new Meal",
+			Type:        tutorialType,
+			Description: "Create a new Tutorial",
 			Args: graphql.FieldConfigArgument{
-				"meal_name": &graphql.ArgumentConfig{
+				"title": &graphql.ArgumentConfig{
 					Type: graphql.NewNonNull(graphql.String),
 				},
-				// "author": &graphql.ArgumentConfig{
-				// 	Type: graphql.NewNonNull(authorType),
-				// },
 			},
 			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
-				meal := Meal{
-					Meal_Name: params.Args["meal_name"].(string),
-					ID:        len(meals) - 1, //id's start at zero.
+				tutorial := Tutorial{
+					Title: params.Args["title"].(string),
 				}
-				meals = append(meals, meal)
-				return meal, nil
+				tutorials = append(tutorials, tutorial)
+				return tutorial, nil
 			},
 		},
 	},
@@ -207,13 +148,13 @@ func main() {
 }
 
 func my_init() { //only run on cold starts
-	meals = populate() //only run on cold starts
+	tutorials = populate() //only run on cold starts
 
 	// Schema
 	fields := graphql.Fields{
-		"meal": &graphql.Field{ //oldname=tutorial
-			Type:        mealType,
-			Description: "Get Meal By ID",
+		"tutorial": &graphql.Field{
+			Type:        tutorialType,
+			Description: "Get Tutorial By ID",
 			Args: graphql.FieldConfigArgument{
 				"id": &graphql.ArgumentConfig{
 					Type: graphql.Int,
@@ -223,9 +164,9 @@ func my_init() { //only run on cold starts
 				id, ok := p.Args["id"].(int)
 				if ok {
 					// Find tutorial
-					for _, meal := range meals {
-						if int(meal.ID) == id {
-							return meal, nil
+					for _, tutorial := range tutorials {
+						if int(tutorial.ID) == id {
+							return tutorial, nil
 						}
 					}
 				}
@@ -233,10 +174,10 @@ func my_init() { //only run on cold starts
 			},
 		},
 		"list": &graphql.Field{
-			Type:        graphql.NewList(mealType),
-			Description: "Get Meal List",
+			Type:        graphql.NewList(tutorialType),
+			Description: "Get Tutorial List",
 			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
-				return meals, nil // oldname=tutorials, nil
+				return tutorials, nil
 			},
 		},
 	}
