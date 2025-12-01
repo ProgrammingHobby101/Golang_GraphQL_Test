@@ -15,18 +15,18 @@ import (
 var meals []Meal //old name=Tutorials [Tutorial]
 
 type Meal struct { //old name=Tutorial
-	ID        int       //old name=ID , Primary Key
-	Author    Author    //old name=Author , foriegn key from Author table.
-	Meal_Name string    //old name=Title
-	Dishes    []Dish    //new field
-	Comments  []Comment //from Users not being the Author of this Meal, and from Author of this meal.
+	ID             int       //old name=ID , Primary Key
+	Author         Author    //old name=Author , foriegn key from Author table.
+	mealnamestruct string    //old name=Title
+	Dishes         []Dish    //new field
+	Comments       []Comment //from Users not being the Author of this Meal, and from Author of this meal.
 }
 type Dish struct { //new struct
 	DishName    string
 	Ingredients []Ingredient
 }
 type Ingredient struct { //new struct
-	Ingredient_Name string
+	Ingredientname string
 }
 type Author struct {
 	Name  string //Author of Meal , need to make query to check it user exist on new user creations.
@@ -43,43 +43,43 @@ var schema graphql.Schema
 func populate() []Meal {
 	author := &Author{Name: "Nicholas Donald", Meals: []int{0, 1, 2}} //fields of this initialization are case-sensitive.
 	meal1 := Meal{                                                    //oldname 'tutorial'
-		ID:        0,
-		Meal_Name: "Thanksgiving",
-		Author:    *author,
+		ID:             0,
+		mealnamestruct: "Thanksgiving",
+		Author:         *author,
 		Dishes: []Dish{
-			{DishName: "Sliced turkey", Ingredients: []Ingredient{{Ingredient_Name: "A traditional roast turkey"}, {Ingredient_Name: "Herbs"}, {Ingredient_Name: "Butter"}}},
-			{DishName: "Mashed potatoes", Ingredients: []Ingredient{{Ingredient_Name: "Potatoes"}, {Ingredient_Name: "Butter"}}},
-			{DishName: "Bread Rolls", Ingredients: []Ingredient{{Ingredient_Name: "King's Hawaiian Original Sweet Rolls"}}},
-			{DishName: "Mac and cheese", Ingredients: []Ingredient{{Ingredient_Name: "Macaroni noodles"}, {Ingredient_Name: "Cheese"}}},
+			{DishName: "Sliced turkey", Ingredients: []Ingredient{{Ingredientname: "A traditional roast turkey"}, {Ingredientname: "Herbs"}, {Ingredientname: "Butter"}}},
+			{DishName: "Mashed potatoes", Ingredients: []Ingredient{{Ingredientname: "Potatoes"}, {Ingredientname: "Butter"}}},
+			{DishName: "Bread Rolls", Ingredients: []Ingredient{{Ingredientname: "King's Hawaiian Original Sweet Rolls"}}},
+			{DishName: "Mac and cheese", Ingredients: []Ingredient{{Ingredientname: "Macaroni noodles"}, {Ingredientname: "Cheese"}}},
 		},
 		Comments: []Comment{
 			{Body: "First Comment", Author: "Nicholas Donald"},
 		},
 	}
 	meal2 := Meal{ //oldname=tutorial2
-		ID:        1,
-		Meal_Name: "New Years Day",
-		Author:    *author,
+		ID:             1,
+		mealnamestruct: "New Years Day",
+		Author:         *author,
 		Dishes: []Dish{
-			{DishName: "Black eye peas", Ingredients: []Ingredient{{Ingredient_Name: "Black eye peas"}, {Ingredient_Name: "Bacon"}}},
-			{DishName: "Turnip greens", Ingredients: []Ingredient{{Ingredient_Name: "Turnip greens"}, {Ingredient_Name: "Salt"}, {Ingredient_Name: "Onion"}}},
-			{DishName: "Sweet potato pie", Ingredients: []Ingredient{{Ingredient_Name: "Sweet potatoes"}, {Ingredient_Name: "Pie crust"}, {Ingredient_Name: "Sugar"}}},
+			{DishName: "Black eye peas", Ingredients: []Ingredient{{Ingredientname: "Black eye peas"}, {Ingredientname: "Bacon"}}},
+			{DishName: "Turnip greens", Ingredients: []Ingredient{{Ingredientname: "Turnip greens"}, {Ingredientname: "Salt"}, {Ingredientname: "Onion"}}},
+			{DishName: "Sweet potato pie", Ingredients: []Ingredient{{Ingredientname: "Sweet potatoes"}, {Ingredientname: "Pie crust"}, {Ingredientname: "Sugar"}}},
 		},
 		Comments: []Comment{
 			{Body: "Second Comment", Author: "Nicholas Donald"},
 		},
 	}
 	meal3 := Meal{ //oldname=tutorial3
-		ID:        2,
-		Meal_Name: "Hamburger Helper",
-		Author:    *author,
+		ID:             2,
+		mealnamestruct: "Hamburger Helper",
+		Author:         *author,
 		Dishes: []Dish{
 			{
 				DishName: "Hamburger Helper",
 				Ingredients: []Ingredient{
-					{Ingredient_Name: "Ground beef"},
-					{Ingredient_Name: "Macaroni noodles"},
-					{Ingredient_Name: "Cheesy cheddar sauce"},
+					{Ingredientname: "Ground beef"},
+					{Ingredientname: "Macaroni noodles"},
+					{Ingredientname: "Cheesy cheddar sauce"},
 				}}},
 		Comments: []Comment{
 			{Body: "Third Comment", Author: "Nicholas Donald"},
@@ -111,7 +111,7 @@ var ingredientType = graphql.NewObject(
 	graphql.ObjectConfig{
 		Name: "Ingredient",
 		Fields: graphql.Fields{
-			"ingredient_name": &graphql.Field{ //new field and this is singular without an 's'. while the ingredient in dishType is plural meaning with an 's'
+			"ingredientname": &graphql.Field{ //new field and this is singular without an 's'. while the ingredient in dishType is plural meaning with an 's'
 				Type: graphql.String, //need to update to replace "graphql.String" with type of ingredients.
 			},
 		},
@@ -152,7 +152,7 @@ var mealType = graphql.NewObject( //oldname=tutorialType
 			"id": &graphql.Field{
 				Type: graphql.Int,
 			},
-			"meal_name": &graphql.Field{
+			"meal": &graphql.Field{
 				Type: graphql.String,
 			},
 			"author": &graphql.Field{
@@ -175,7 +175,7 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 			Type:        mealType,
 			Description: "Create a new Meal",
 			Args: graphql.FieldConfigArgument{
-				"meal_name": &graphql.ArgumentConfig{
+				"meal": &graphql.ArgumentConfig{
 					Type: graphql.NewNonNull(graphql.String),
 				},
 				// "author": &graphql.ArgumentConfig{
@@ -184,8 +184,8 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 			},
 			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 				meal := Meal{
-					Meal_Name: params.Args["meal_name"].(string),
-					ID:        len(meals) - 1, //id's start at zero.
+					mealnamestruct: params.Args["meal"].(string),
+					ID:             len(meals) - 1, //id's start at zero.
 				}
 				meals = append(meals, meal)
 				return meal, nil
@@ -255,7 +255,7 @@ func my_init() { //only run on cold starts
 }
 
 func handleHealth() events.LambdaFunctionURLResponse {
-	message := "Hello Healthy World2! Watching the Tamron Hall Show."
+	message := "Hello Healthy World4! Watching the Tamron Hall Show."
 	return events.LambdaFunctionURLResponse{StatusCode: 200, Body: message}
 }
 
