@@ -206,7 +206,7 @@ func main() {
 	rJSON, _ = json.Marshal(r)
 	fmt.Printf("%s \n", rJSON)
 
-	// Query
+	// Query (this works in cmd line.)
 	query = `
 		mutation{
 				create(title: "my test book") {
