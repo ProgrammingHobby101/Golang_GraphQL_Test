@@ -98,10 +98,10 @@ var authorType = graphql.NewObject(
 	graphql.ObjectConfig{
 		Name: "Author",
 		Fields: graphql.Fields{
-			"Name": &graphql.Field{
+			"name": &graphql.Field{
 				Type: graphql.String,
 			},
-			"Meals": &graphql.Field{
+			"meals": &graphql.Field{
 				Type: graphql.NewList(graphql.Int),
 			},
 		},
