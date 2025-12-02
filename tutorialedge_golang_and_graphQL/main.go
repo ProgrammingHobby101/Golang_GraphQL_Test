@@ -17,7 +17,7 @@ var meals []Meal //old name=Tutorials [Tutorial]
 type Meal struct { //old name=Tutorial
 	ID             int       //old name=ID , Primary Key
 	Author         Author    //old name=Author , foriegn key from Author table.
-	mealnamestruct string    //old name=Title
+	Mealnamestruct string    //old name=Title
 	Dishes         []Dish    //new field
 	Comments       []Comment //from Users not being the Author of this Meal, and from Author of this meal.
 }
@@ -29,8 +29,8 @@ type Ingredient struct { //new struct
 	Ingredientname string
 }
 type Author struct {
-	Name  string //Author of Meal , need to make query to check it user exist on new user creations.
-	Meals []int  //old name=Tutorial, foreign key, and it's from the Meal table.
+	Name          string //Author of Meal , need to make query to check it user exist on new user creations.
+	MealsbyAuthor []int  //old name=Tutorial, foreign key, and it's from the Meal table.
 }
 
 type Comment struct {
@@ -41,10 +41,10 @@ type Comment struct {
 var schema graphql.Schema
 
 func populate() []Meal {
-	author := &Author{Name: "Nicholas Donald", Meals: []int{0, 1, 2}} //fields of this initialization are case-sensitive.
-	meal1 := Meal{                                                    //oldname 'tutorial'
+	author := &Author{Name: "Nicholas Donald", MealsbyAuthor: []int{0, 1, 2}} //fields of this initialization are case-sensitive.
+	meal1 := Meal{                                                            //oldname 'tutorial'
 		ID:             0,
-		mealnamestruct: "Thanksgiving",
+		Mealnamestruct: "Thanksgiving",
 		Author:         *author,
 		Dishes: []Dish{
 			{DishName: "Sliced turkey", Ingredients: []Ingredient{{Ingredientname: "A traditional roast turkey"}, {Ingredientname: "Herbs"}, {Ingredientname: "Butter"}}},
@@ -58,7 +58,7 @@ func populate() []Meal {
 	}
 	meal2 := Meal{ //oldname=tutorial2
 		ID:             1,
-		mealnamestruct: "New Years Day",
+		Mealnamestruct: "New Years Day",
 		Author:         *author,
 		Dishes: []Dish{
 			{DishName: "Black eye peas", Ingredients: []Ingredient{{Ingredientname: "Black eye peas"}, {Ingredientname: "Bacon"}}},
@@ -71,7 +71,7 @@ func populate() []Meal {
 	}
 	meal3 := Meal{ //oldname=tutorial3
 		ID:             2,
-		mealnamestruct: "Hamburger Helper",
+		Mealnamestruct: "Hamburger Helper",
 		Author:         *author,
 		Dishes: []Dish{
 			{
@@ -147,12 +147,12 @@ var commentType = graphql.NewObject(
 
 var mealType = graphql.NewObject( //oldname=tutorialType
 	graphql.ObjectConfig{
-		Name: "Meal",
+		Name: "Meal", //oldname=Tutorial
 		Fields: graphql.Fields{
 			"id": &graphql.Field{
 				Type: graphql.Int,
 			},
-			"meal": &graphql.Field{
+			"mealtitle": &graphql.Field{
 				Type: graphql.String,
 			},
 			"author": &graphql.Field{
@@ -175,17 +175,17 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 			Type:        mealType,
 			Description: "Create a new Meal",
 			Args: graphql.FieldConfigArgument{
-				"meal": &graphql.ArgumentConfig{
+				"mealtitle": &graphql.ArgumentConfig{
 					Type: graphql.NewNonNull(graphql.String),
 				},
-				// "author": &graphql.ArgumentConfig{
-				// 	Type: graphql.NewNonNull(authorType),
-				// },
+				"author": &graphql.ArgumentConfig{
+					Type: graphql.NewNonNull(authorType),
+				},
 			},
 			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 				meal := Meal{
-					mealnamestruct: params.Args["meal"].(string),
-					ID:             len(meals) - 1, //id's start at zero.
+					Mealnamestruct: params.Args["mealtitle"].(string),
+					ID:             len(meals), //note: id's start at zero.
 				}
 				meals = append(meals, meal)
 				return meal, nil
