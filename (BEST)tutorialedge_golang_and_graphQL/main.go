@@ -229,7 +229,7 @@ func my_init() { //only run on cold starts
 						}
 					}
 				}
-				return nil, nil
+				return meals, nil
 			},
 		},
 		"list": &graphql.Field{
